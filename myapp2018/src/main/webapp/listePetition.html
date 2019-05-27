@@ -21,7 +21,7 @@
 		            url: "https://cloudtinypet.appspot.com/_ah/api/myApi/v1/listAllPetition",
 		            withCredentials: true,
 		        })
-		        .then(function(resu"src/main/webapp/listePetition.html"lt) {
+		        .then(function(result) {
 		        	Petition.list = result.items
 		        })
 		     
@@ -41,7 +41,7 @@
 	    	                m("a.user-list-item", "contenu:      " +" "+pet.properties.body),    
 	    	                m("br"),
 	    	                m("a.user-list-item", "Nombre de vote :  "+pet.properties.score ),    
-				 	       m("button", {onclick: function() { 
+				 	        m("button", {onclick: function() { 
 				        	   
 				 	    	   		return m.request({
 			           						method: "PUT",
