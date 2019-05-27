@@ -1,6 +1,5 @@
 # TinyPet
 
-La version final du projet est dans la branche "CloudFinal"
 
 
 Yassine KARAMI
