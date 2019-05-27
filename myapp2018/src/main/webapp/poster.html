@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="ISO-8859-1">
+		<link rel="stylesheet" href="style.css">
+		    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		
+<title>Tiny Pet</title>
+
+</head>
+
+<body>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="https://unpkg.com/mithril/mithril.js"></script>
+	<script>
+    var root = document.body
+   
+ // Entité petition avec les appels REST
+	var Petition = {
+	    list: [],
+	    loadList: function() {
+	        return m.request({
+	            method: "GET",
+	            url: "",
+	            withCredentials: true,
+	        })
+	        .then(function(result) {
+	            Petition.list = result.data
+	        })
+	    },
+	    current: {},
+	    save: function() {
+	    	console.log("saving...",Petition.current)
+	        return m.request({
+	            method: "POST",
+	              url: "https://cloudtinypet.appspot.com/_ah/api/myApi/v1/addPetition?sender="+localStorage.getItem('userId')+"&body="+Petition.current.body+"&title="+Petition.current.title,
+	            data: Petition.current,
+	            withCredentials: true, 
+	        })
+	        .then(function(result) {
+	        	if(result)
+	        		$('alertSucces').show();
+	        	    window.location.href = "index.html";
+
+	        })
+	    }
+	}
+    // formulaire pour poster une petition
+	 var PetitionForm = {
+    		
+				view: function() {
+			        return m("form", {
+			                onsubmit: function(e) {
+			                    e.preventDefault()
+			                    Petition.save()
+			                    
+			                }
+			            }, [
+			            m("label.label", "title"),
+			            m("input.input[type=text][placeholder=title]",{
+			                oninput: function (e) {Petition.current.title=e.target.value},
+			                value: Petition.current.title
+			            }),
+			            m("label.label", "body"),
+			            m("input.input[type=text][placeholder=body]", {
+			                oninput: function (e) {Petition.current.body=e.target.value},
+			                value: Petition.current.body
+			            }),
+			            m("button.button[type=submit]", "Submit"),
+			        ])
+			    }
+		}
+
+    
+	 var Hello = {
+	 	    view: function() {
+	 	    	return m("main", [
+	 	            m("h1", {class: "title"}, "Poster une petition"),
+	 	            m("a", {href:"index.html"}, "Retour a l'accueil"),
+	 	            m("a", {href:"listePetition.html"}, "Liste des petitions"),
+	 	            m("div", {class :"alert alert-success", id:"alertSucces",style:"display:none;"},"Petition bien postée"),
+	 	            m("div", {id: "form"}, m(PetitionForm)),
+	 	        ])
+
+	 	    }
+	 	}
+
+ 	m.mount(document.body, Hello)	
+
+    
+
+	</script>
+
+</body>
+
+</html>

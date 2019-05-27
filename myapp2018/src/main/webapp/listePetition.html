@@ -1,0 +1,75 @@
+<html>
+
+<head>
+	<title>Tiny Pet</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+	<script src="https://unpkg.com/mithril/mithril.js"></script>
+	<script>
+
+    var root = document.body	
+
+    // appel REST pour manipuler les entite
+
+		var Petition = {
+		    list: [],
+		    loadList: function() {
+		        return m.request({
+		            method: "GET",
+		            url: "https://cloudtinypet.appspot.com/_ah/api/myApi/v1/listAllPetition",
+		            withCredentials: true,
+		        })
+		        .then(function(resu"src/main/webapp/listePetition.html"lt) {
+		        	Petition.list = result.items
+		        })
+		     
+		    },
+		   
+		}
+   
+   
+	    
+		var PetitionView = {
+		 		oninit: Petition.loadList,
+		 	    view: function() {
+		 	        return m(".user-list", Petition.list.map(function(pet) {
+		                return m("main", [
+		                	m("a.user-list-item", "titre :"+ pet.properties.title),    
+	    	                m("br"),
+	    	                m("a.user-list-item", "contenu:      " +" "+pet.properties.body),    
+	    	                m("br"),
+	    	                m("a.user-list-item", "Nombre de vote :  "+pet.properties.score ),    
+				 	       m("button", {onclick: function() { 
+				        	   
+				 	    	   		return m.request({
+			           						method: "PUT",
+			           						url: "https://cloudtinypet.appspot.com/_ah/api/myApi/v1/signer?name="+pet.key.name+"&userId="+localStorage.getItem('userId'),
+			    						})}}, "signer"),
+		 	    		 ])
+		 	        }))
+		 	    },
+		 } 
+	 var Hello = {
+	 	    view: function() {
+	 	    	return m("main", [
+	 	 			//title
+	 	            m("h1", {class: "title"}, "Site de petition"),
+	 	            //nav 
+	 	            m("a", {href:"index.html"}, "Accueil"),
+	 	            m("a", {href:"poster.html"}, "Poster une petition"),	
+	 	            // page content
+	 	            m("h1", {class: "title"}, "Liste des petitions"),
+	 	            m("div", {id: "box"}, m(PetitionView)),
+	 	        ])
+	 	    }
+	 	}
+ m.mount(document.body, Hello)	
+   
+
+	</script>
+
+</body>
+
+</html>

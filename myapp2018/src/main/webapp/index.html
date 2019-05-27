@@ -1,0 +1,81 @@
+<html>
+
+
+
+<head>
+
+	<title>Test Pet</title>
+		<link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+
+
+<body>
+	<script src="https://unpkg.com/mithril/mithril.js"></script>
+	<script>
+    var root = document.body
+    
+
+    // appel REST pour manipuler les entite
+
+		var Petition = {
+		    list: [],
+		    loadList: function() {
+		        return m.request({
+		            method: "GET",
+		            url: "https://cloudtinypet.appspot.com/_ah/api/myApi/v1/listTopPetition",
+		            withCredentials: true,
+		        })
+		        .then(function(result) {
+		        	Petition.list = result.items
+		        })    
+		    },
+		}
+	    
+		var PetitionView = {
+		 		oninit: Petition.loadList,
+		 	    view: function() {
+		 	        return m(".user-list", Petition.list.map(function(pet) {
+		                return m("main", [
+			 	    	m("div",{class: "card",style:"width: 18rem;"}),
+		 	    		m("div",{class: "card-body"}),
+		 	    		m("h5",{class: "card-title",style:"width: 18rem;"},pet.properties.title),
+		 	    		m("p",{class: "card-text"},pet.properties.body),
+			 	    	m("h1",{class: "card-title pricing-card-title"},"Score :"+pet.properties.score),
+			 	    	//m("h1",{class: "card-title pricing-card-title"},"id :"+pet.key.name),
+			 	        m("button", {onclick: function() {  console.log(localStorage.getItem('userId'))	
+			 	        	return m.request({
+		           						method: "PUT",
+		           						url: "https://cloudtinypet.appspot.com/_ah/api/myApi/v1/signer?name="+pet.key.name+"&userId="+localStorage.getItem('userId'),    
+		    						})}}, "signer"),   	   
+		 	    		 ])
+		 	    		 }))
+		 	    },
+		 } 
+	 var Hello = {
+	 	    view: function() {
+	 	    	return m("main", [
+	 	    		m("div", {class:"container-fluid"}),
+	 	            m("h1", {class: "title"}, "Site de petition"),
+	 	            m("a", {href:"connexion.html"}, "connexion"),
+	 	            m("a", {href:"poster.html"}, "Poster une petition"),
+					m("a", {href:"listePetition.html"}, "Liste des petitions"),
+					m("a", {href:"petitionUser.html"}, "Mes petitions"),
+	 	            m("h1", {class: "title"}, "Trending petitions"),
+	 	            m("div", {id: "box"}, m(PetitionView)),
+	 	        ])
+	 	    }
+	 	}
+
+ m.mount(document.body, Hello)	
+
+	</script>
+
+
+
+</body>
+
+
+
+</html>

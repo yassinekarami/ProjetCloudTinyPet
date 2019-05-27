@@ -1,0 +1,128 @@
+<html>
+
+<head>
+
+	<title>Tiny Pet</title>
+	 <meta name="google-signin-client_id" content="645573598547-h18kns51ko3p9ja3ni909jbh79p4gfv4.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+	<script src="https://unpkg.com/mithril/mithril.js"></script>
+	<script>
+    var root = document.body
+    
+    // appel REST pour manipuler les entite
+		var Petition = {
+		    list: [],
+		    loadList: function() {
+		        return m.request({
+		            method: "GET",
+		            url: "//cloudtinypet.appspot.com/_ah/api/myApi/v1/listUserPetition?userId="+localStorage.getItem('userId'),
+		            withCredentials: true,
+		        })
+		        .then(function(result) {
+		        	Petition.list = result.items
+		        })
+		    },
+		    signlist: [],
+		    signloadList: function() {
+		        return m.request({
+		            method: "GET",
+		            url: "//cloudtinypet.appspot.com/_ah/api/myApi/v1/listUserSignPetition?userId="+localStorage.getItem('userId'),
+		            withCredentials: true,
+		        })
+		        .then(function(result) {
+		        	Petition.signlist = result.items
+		        })
+		    },
+		 //   current: {},
+		 /*    load: function(id) {
+		        return m.request({
+		            method: "GET",
+		            url: "https://rem-rest-api.herokuapp.com/api/users/" + id,
+		            withCredentials: true,
+		        })
+		        .then(function(result) {
+		            User.current = result
+		        })
+		    },  */
+		   /*   save: function() {
+		        return m.request({
+		            method: "PUT",
+		            url: "https://rem-rest-api.herokuapp.com/api/users/" + User.current.id,
+		            data: User.current,
+		            withCredentials: true,
+		        })
+		    }  */
+		}
+    // affichage des petitions POSTER par le user
+	 var PetitionView = {
+	 		oninit: Petition.loadList,
+	 	    view: function() {
+	 	        return m(".user-list", Petition.list.map(function(pet) {
+	 	        	console.log(pet)
+	                return m("main", [
+		 	    	m("div",{class: "card",style:"width: 18rem;"}),
+	 	    		m("div",{class: "card",style:"width: 18rem;"}),
+	 	    		m("div",{class: "card-body"}),
+	 	    		m("h3",{class: "card-title",style:"width: 18rem;"},"titre : "+ pet.properties.title),
+	 	    		m("p",{class: "card-text"},"Contenu : "+pet.properties.body),
+		 	    	m("p",{class: "card-title pricing-card-title"},"Score :"+pet.properties.score),
+	 	    	//	m("button", {id:pet.properties.id,class:"btn btn-success"},"Signer"),
+	 	    	//console.log(localStorage.getItem('userId'))
+	 	    		 ])
+	 	        }))
+	 	    },
+	 } 
+    
+    
+ // affichage des petitions SIGNER par le user
+	 var SignerView = {
+	 		oninit: Petition.signloadList,
+	 	    view: function() {
+	 	        return m(".user-list", Petition.signlist.map(function(pet) {
+	                return m("main", [
+		 	    	m("div",{class: "card",style:"width: 18rem;"}),
+	 	    		m("div",{class: "card",style:"width: 18rem;"}),
+	 	    		m("div",{class: "card-body"}),
+	 	    		m("h3",{class: "card-title",style:"width: 18rem;"},"titre : "+ pet.properties.title),
+	 	    		m("p",{class: "card-text"},"Contenu : "+pet.properties.body),
+		 	    	m("p",{class: "card-title pricing-card-title"},"Score :"+pet.properties.score),
+	 	    	//	m("button", {id:pet.properties.id,class:"btn btn-success"},"Signer"),
+	 	    	//console.log(localStorage.getItem('userId'))
+	 	    		 ])
+	 	        }))
+	 	    },
+	 }
+    
+	 var Hello = {
+	 	    view: function() {
+	 	    	return m("main", [
+	 	            m("h1", {class: "title"}, "Site de petition"),
+	 	            m("a", {href:"connexion.html"}, "connexion"),
+	 	            m("a", {href:"poster.html"}, "Poster une petition"),
+					m("a", {href:"listePetition.html"}, "Liste des petitions"),
+					m("a", {href:"petitionUser.html"}, "Mes petitions"),
+					
+					// petition posté
+	 	            m("h1", {class: "title"}, "Mes pétitions postées"),
+	 	            m("div", {id: "box"}, m(PetitionView)),
+	 	            
+	 	            // petition signer
+	 	            m("h1", {class: "title"}, "Mes pétitions signées"),
+	 	            m("div", {id: "box"}, m(SignerView)),
+	 	        ])
+	 	    }
+
+	 	}
+ m.mount(document.body, Hello)	
+
+	</script>
+
+</body>
+
+</html>
